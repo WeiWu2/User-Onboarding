@@ -4,10 +4,52 @@ import Form from './component/Form'
 import React, {useState, useEffect} from 'react';
 import * as yup from 'yup';
 import Schema from './validate/schema'
+import axios from "axios"
+import User from './component/User'
+const initialFormValues = {
+  name:"",
+  email:"",
+  password:'',
+  tos:false
+}
+const initialFormErrors = {
+  name: '',
+  email: '',
+  password: '',
+  tos: '',
+}
+const initialUsers = [
+  {name: "Wei", email: "wei@gmail.com", password:"why would I should password", tos:true},
+  {name: "Wei2", email: "wei2@gmail.com", password:"why would I should password", tos:true}
+];
+const initialDisabled = true
+
 
 function App() {
+  const [user,setUser] = useState(initialUsers);
+  const [formValues, setFormValues] = useState(initialFormValues);
+  const [formErrors, setFormErrors] = useState(initialFormErrors) 
+  const [disabled, setDisabled] = useState(initialDisabled)     
 
-const onSubmit = () => {}
+  
+const onSubmit = () => {
+    const newUser = {
+      name: formValues.name.trim(),
+      email: formValues.email.trim(),
+      password: formValues.password.trim(),
+      tos:true
+    }
+    postNewUser(newUser);
+  }
+
+  const postNewUser = newUser => {
+  
+    axios.post('https://reqres.in/api/users', newUser)
+    .then((res) => {
+      setUser([res.data, ...user])
+    })
+    setFormValues(initialFormValues);
+  }
 
 
 const onChange = (name, value) => {
@@ -28,32 +70,27 @@ const onChange = (name, value) => {
     [name]: value 
   })
 }
+  
 
-
-
-const initialFormValues = {
-  username:"",
-  email:"",
-  password:'',
-  tos:false
-}
-const initialFormErrors = {
-  username: '',
-  email: '',
-  password: '',
-  tos: '',
-}
-const initialUsers = []
-const initialDisabled = true
-const [user,setUser] = useState({initialUsers});
-const [formValues, setFormValues] = useState(initialFormValues);
-const [formErrors, setFormErrors] = useState(initialFormErrors) 
-const [disabled, setDisabled] = useState(initialDisabled)       
-
+useEffect(() => {
+  Schema.isValid(formValues).then((valid) => {
+    setDisabled(!valid)
+  })
+}, [formValues])
 
   return (
     <div >
-      <Form formValues={formValues} submit={onSubmit} change={onChange}/>
+      <Form formValues={formValues} submit={onSubmit} change={onChange} disabled={disabled}
+        errors={formErrors}/>
+
+
+         {
+        user.map(user => {
+          return (
+            <User key={user.id} details={user} />
+          )
+        })
+      }
     </div>
   );
 }
