@@ -19,8 +19,8 @@ const initialFormErrors = {
   tos: '',
 }
 const initialUsers = [
-  {name: "Wei", email: "wei@gmail.com", password:"why would I should password", tos:true},
-  {name: "Wei2", email: "wei2@gmail.com", password:"why would I should password", tos:true}
+  // {name: "Wei", email: "wei@gmail.com", password:"why would I should password", tos:true},
+  // {name: "Wei2", email: "wei2@gmail.com", password:"why would I should password", tos:true}
 ];
 const initialDisabled = true
 
